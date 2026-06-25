@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Extintor · TdeA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --g9:#0d3b21; --g7:#1b6b3a; --g5:#2e9f5b; --g1:#e6f4ec;
+      --r7:#c62828; --r1:#ffebee; --og:#e65100; --yw:#f9a825;
+      --wh:#ffffff; --bg:#f0f2f4; --bd:#dee2e6; --g4:#9ca3af; --g8:#374151;
+      --tx:#1a1a2e; --sh:0 4px 20px rgba(0,0,0,.12); --r:16px; --ease:all .3s cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{font-family:'Montserrat',system-ui,sans-serif;background:var(--bg);color:var(--tx);
+         min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden}
+    .screen{display:none;min-height:100vh;padding-bottom:32px}
+    .screen.on{display:block;animation:fs .35s ease}
+    @keyframes fs{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+    /* HEADER */
+    .ahdr{background:linear-gradient(150deg,var(--g9),var(--g7) 60%,#1f8a4c);color:#fff;
+           padding:22px 20px 26px;text-align:center;overflow:hidden;position:relative}
+    .ahdr::before{content:'';position:absolute;inset:0;
+      background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")}
+    .inst{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.75;margin-bottom:6px;position:relative}
+    .etitle{font-size:20px;font-weight:800;line-height:1.25;position:relative;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .ebadge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);
+            border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;
+            font-size:12px;font-weight:700;margin-top:10px;position:relative}
+    .tipo-chip{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10px;
+               font-weight:700;margin-top:8px;position:relative;letter-spacing:.5px}
+    .chip-abc{background:#1565c0;color:#fff}
+    .chip-co2{background:#7b1fa2;color:#fff}
+    .chip-sol{background:#00695c;color:#fff}
+
+    /* ALERT */
+    .alert{background:linear-gradient(90deg,var(--r7),#e53935);color:#fff;
+           padding:10px 20px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600}
+    .alert strong{color:#ffcdd2}
+
+    /* BACK */
+    .back{display:inline-flex;align-items:center;gap:8px;background:#fff;
+          border:2px solid var(--g7);color:var(--g7);padding:12px 20px;margin:16px 20px;
+          border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;
+          cursor:pointer;transition:var(--ease);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .back:active{background:var(--g1);transform:scale(.97)}
+
+    /* SUB HEADER */
+    .shdr{background:linear-gradient(135deg,var(--g9),var(--g7));color:#fff;
+           padding:24px 20px;text-align:center}
+    .shdr h2{font-size:18px;font-weight:800}
+    .shdr p{font-size:12px;opacity:.78;margin-top:5px}
+
+    /* SVG WRAP */
+    .svgw{display:flex;flex-direction:column;align-items:center;padding:12px 16px 4px}
+    .svgh{font-size:11.5px;color:var(--g4);text-align:center;margin-top:6px;font-style:italic}
+
+    /* PART CARD */
+    .pc{display:none;margin:0 16px 12px;background:#fff;border-radius:var(--r);
+        box-shadow:var(--sh);overflow:hidden;animation:fs .3s ease}
+    .pc.op{display:block}
+    .pch{background:linear-gradient(90deg,var(--g7),var(--g5));color:#fff;
+         padding:14px 18px;font-size:14px;font-weight:700}
+    .pcb{padding:16px 18px;font-size:13px;line-height:1.7;color:var(--g8)}
+    .pcf{display:flex;justify-content:flex-end;padding:0 18px 16px}
+    .cbtn{background:var(--g7);color:#fff;border:none;border-radius:8px;padding:9px 20px;
+          font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+
+    /* NAV */
+    .nav{display:grid;gap:12px;padding:4px 20px 20px}
+    .nb{display:flex;align-items:center;gap:14px;background:#fff;border:none;
+        border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);cursor:pointer;
+        font-family:inherit;font-size:15px;font-weight:700;color:var(--tx);
+        text-align:left;width:100%;transition:var(--ease)}
+    .nb:active{transform:scale(.97);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .nb .ic{font-size:28px;flex-shrink:0}
+    .nb .lb{flex:1}
+    .nb .ar{color:var(--g4);font-size:20px;font-weight:400}
+    .nb.g{border-left:5px solid var(--g7)}
+    .nb.r{border-left:5px solid var(--r7)}
+    .nb.o{border-left:5px solid var(--og)}
+
+    /* DATA CARD */
+    .dc{background:#fff;border-radius:var(--r);margin:0 20px 16px;box-shadow:var(--sh);overflow:hidden}
+    .dch{background:linear-gradient(135deg,var(--g9),var(--g7));color:#fff;padding:22px 20px}
+    .dch h2{font-size:18px;font-weight:800}
+    .dch p{font-size:12px;opacity:.75;margin-top:4px}
+    .df{display:flex;align-items:flex-start;padding:15px 20px;
+        border-bottom:1px solid var(--bd);gap:14px}
+    .df:last-child{border-bottom:none}
+    .dfi{font-size:22px;flex-shrink:0;margin-top:1px}
+    .dfl{font-size:10.5px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.6px}
+    .dfv{font-size:15px;font-weight:700;color:var(--tx);margin-top:3px}
+    .bdg{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;margin-top:4px}
+    .bok{background:#e6f4ec;color:#145a32}
+    .bex{background:#fff3e0;color:#b45309}
+
+    /* VERIFIED */
+    .ver{display:flex;align-items:center;gap:10px;background:var(--g1);
+         border-radius:10px;padding:12px 16px;margin:0 20px 16px}
+    .ver span:first-child{font-size:22px}
+    .ver span:last-child{font-size:12px;font-weight:600;color:var(--g9)}
+
+    /* WARN */
+    .wb{background:#fff8e1;border-left:4px solid var(--og);border-radius:0 10px 10px 0;
+        padding:14px 16px;margin:0 20px 16px;font-size:12.5px;color:#7c4700;line-height:1.6}
+
+    /* VIDEO */
+    .vw{margin:16px 20px;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);
+        position:relative;padding-top:56.25%;background:#000}
+    .vw iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+    .vlb{text-align:center;font-size:11px;color:var(--g4);padding:8px 20px 0;font-style:italic}
+    .pass{background:#fff;border-radius:var(--r);margin:16px 20px 0;padding:20px;box-shadow:var(--sh)}
+    .pass h3{font-size:16px;font-weight:800;color:var(--g9);margin-bottom:14px}
+    .pi{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+    .pi:last-child{margin-bottom:0}
+    .pn{background:var(--g7);color:#fff;width:30px;height:30px;border-radius:50%;
+        display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+    .pt{font-size:13px;color:var(--g8);line-height:1.6}
+    .pt strong{color:var(--g7)}
+
+    /* FIRE */
+    .slbl{font-size:10.5px;font-weight:700;color:var(--g4);text-transform:uppercase;
+          letter-spacing:.8px;padding:0 20px;margin-bottom:10px}
+    .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 4px}
+    .fc{background:#fff;border-radius:var(--r);padding:18px 14px;text-align:center;
+        box-shadow:var(--sh);position:relative;overflow:hidden}
+    .fc.on{border-top:4px solid var(--g7)}
+    .fc.off{opacity:.38;filter:grayscale(.6)}
+    .fc.off::after{content:'✕';position:absolute;top:8px;right:10px;color:var(--r7);font-size:14px;font-weight:900}
+    .fico{font-size:34px;margin-bottom:6px}
+    .fcls{font-size:30px;font-weight:900;margin-bottom:4px}
+    .ca{color:#1565c0}.cb{color:#e65100}.cc{color:#f59e0b}.cd{color:#7c3aed}.ck{color:#db2777}
+    .fn{font-size:11px;font-weight:800;margin-bottom:3px}
+    .fex{font-size:10px;color:var(--g4);line-height:1.4}
+    .fnote{background:var(--g1);border-left:4px solid var(--g7);
+           border-radius:0 10px 10px 0;padding:15px 16px;margin:14px 20px 0;
+           font-size:12.5px;color:var(--g9);line-height:1.65;display:none}
+
+    /* FOOTER */
+    .ftr{text-align:center;padding:20px;font-size:10.5px;color:var(--g4);
+         border-top:1px solid var(--bd);margin-top:12px;line-height:1.8}
+
+    /* SVG HOTSPOTS */
+    .hs{fill:rgba(30,180,90,.12);stroke:rgba(30,180,90,.55);stroke-width:1.8;cursor:pointer;transition:var(--ease)}
+    .hs:active{fill:rgba(30,180,90,.35)}
+    @media(hover:hover){.hs:hover{fill:rgba(30,180,90,.28)}}
+
+    /* ERROR CARD */
+    .err{background:#fff;border-radius:var(--r);margin:20px;padding:30px 24px;
+         text-align:center;box-shadow:var(--sh);border-top:4px solid var(--og)}
+    .err .eico{font-size:48px;margin-bottom:12px}
+    .err h3{font-size:18px;font-weight:800;color:var(--og);margin-bottom:8px}
+    .err p{font-size:13px;color:var(--g8);line-height:1.6}
+  </style>
+</head>
+<body>
+
+<!-- INICIO -->
+<div id="sc-home" class="screen on">
+  <div class="ahdr">
+    <div class="inst">🏫 Tecnológico de Antioquia — TdeA</div>
+    <div class="etitle" id="h-title">Cargando...</div>
+    <div class="ebadge">📌 <span id="h-badge">---</span></div>
+    <div><span class="tipo-chip" id="h-chip">ABC</span></div>
+  </div>
+  <div class="alert">
+    <span>🚨</span>
+    <span>Emergencias: <strong>123</strong> · Bomberos: <strong>119</strong> · SST TdeA: Ext. <strong>200</strong></span>
+  </div>
+
+  <div class="svgw">
+    <svg id="ext-svg" viewBox="0 0 260 400" width="240" height="360"
+         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama interactivo">
+      <ellipse cx="130" cy="388" rx="52" ry="8" fill="rgba(0,0,0,.14)"/>
+      <!-- Cuerpo -->
+      <rect x="90" y="148" width="80" height="210" rx="16" fill="#c62828"/>
+      <rect x="97" y="158" width="11" height="185" rx="5.5" fill="rgba(255,255,255,.16)"/>
+      <ellipse cx="130" cy="358" rx="40" ry="10" fill="#b71c1c"/>
+      <!-- Cuello -->
+      <rect x="112" y="112" width="36" height="42" rx="8" fill="#37474f"/>
+      <ellipse cx="130" cy="112" rx="18" ry="7" fill="#546e7a"/>
+      <!-- Etiqueta blanca -->
+      <rect x="92" y="192" width="76" height="88" rx="5" fill="white" opacity=".93"/>
+      <text x="130" y="212" text-anchor="middle" font-size="7.5" font-weight="800" fill="#c62828" font-family="Montserrat,sans-serif">EXTINTOR</text>
+      <text x="130" y="224" text-anchor="middle" font-size="6" fill="#333" font-family="Montserrat,sans-serif" id="svg-st">POLVO QUÍMICO SECO</text>
+      <text x="130" y="236" text-anchor="middle" font-size="6.5" font-weight="800" fill="#333" font-family="Montserrat,sans-serif" id="svg-tp">ABC MULTIPROPÓSITO</text>
+      <line x1="100" y1="244" x2="160" y2="244" stroke="#e0e0e0" stroke-width=".8"/>
+      <text x="130" y="256" text-anchor="middle" font-size="5.5" fill="#777" font-family="Montserrat,sans-serif">Tecnológico de Antioquia</text>
+      <text x="130" y="271" text-anchor="middle" font-size="9" font-weight="800" fill="#1b6b3a" font-family="Montserrat,sans-serif" id="svg-id">---</text>
+      <!-- Manija -->
+      <path d="M112 92 Q112 68 130 68 Q148 68 148 92" fill="none" stroke="#263238" stroke-width="9" stroke-linecap="round"/>
+      <!-- Gatillo -->
+      <rect x="142" y="116" width="38" height="10" rx="5" fill="#263238"/>
+      <rect x="153" y="123" width="10" height="26" rx="4" fill="#37474f"/>
+      <!-- Pasador -->
+      <circle cx="145" cy="121" r="4.5" fill="#f9a825" stroke="#e65100" stroke-width="1.5"/>
+      <line x1="145" y1="116" x2="145" y2="105" stroke="#f9a825" stroke-width="2.5"/>
+      <circle cx="145" cy="103" r="5" fill="none" stroke="#f9a825" stroke-width="2.2"/>
+      <line x1="144" y1="121" x2="138" y2="136" stroke="#43a047" stroke-width="1.8" stroke-dasharray="2.5,1.5"/>
+      <circle cx="138" cy="136" r="4" fill="#43a047"/>
+      <text x="138" y="139" text-anchor="middle" font-size="4" fill="white" font-family="Montserrat,sans-serif">✓</text>
+      <!-- Manómetro -->
+      <g id="g-mano">
+        <circle cx="130" cy="174" r="15" fill="white" stroke="#455a64" stroke-width="2"/>
+        <circle cx="130" cy="174" r="11" fill="#f5f5f5"/>
+        <path d="M120 181 A11 11 0 0 1 140 181" fill="none" stroke="#e0e0e0" stroke-width="2.5"/>
+        <path d="M120 181 A11 11 0 0 1 130 163" fill="none" stroke="#43a047" stroke-width="3"/>
+        <line x1="130" y1="174" x2="130" y2="165" stroke="#c62828" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="130" cy="174" r="2.5" fill="#37474f"/>
+        <text x="130" y="183" text-anchor="middle" font-size="4.5" fill="#777" font-family="Montserrat,sans-serif">OK</text>
+      </g>
+      <!-- Manguera -->
+      <path d="M90 310 Q58 310 48 328 Q40 342 52 350" fill="none" stroke="#263238" stroke-width="7" stroke-linecap="round"/>
+      <ellipse cx="50" cy="350" rx="9" ry="6" fill="#37474f" transform="rotate(25,50,350)"/>
+      <ellipse cx="50" cy="350" rx="5" ry="3.5" fill="#212121" transform="rotate(25,50,350)"/>
+      <!-- Hotspots -->
+      <ellipse class="hs" cx="130" cy="78" rx="32" ry="22" onclick="showPart('manija')"/>
+      <ellipse class="hs" cx="157" cy="124" rx="26" ry="18" onclick="showPart('gatillo')"/>
+      <ellipse class="hs" cx="141" cy="117" rx="20" ry="20" onclick="showPart('pasador')"/>
+      <ellipse class="hs" id="hs-mano" cx="130" cy="174" rx="22" ry="22" onclick="showPart('manometro')"/>
+      <ellipse class="hs" cx="55" cy="338" rx="24" ry="20" onclick="showPart('manguera')"/>
+      <!-- Labels -->
+      <text x="220" y="74" text-anchor="middle" font-size="8.5" fill="#455a64" font-family="Montserrat,sans-serif">①Manija</text>
+      <line x1="204" y1="74" x2="162" y2="76" stroke="#bdbdbd" stroke-width=".9" stroke-dasharray="3,2"/>
+      <text x="225" y="120" text-anchor="middle" font-size="8.5" fill="#455a64" font-family="Montserrat,sans-serif">②Gatillo</text>
+      <line x1="207" y1="120" x2="183" y2="122" stroke="#bdbdbd" stroke-width=".9" stroke-dasharray="3,2"/>
+      <text x="222" y="102" text-anchor="middle" font-size="8.5" fill="#f9a825" font-family="Montserrat,sans-serif">③Pasador</text>
+      <line x1="204" y1="104" x2="162" y2="113" stroke="#f9a825" stroke-width=".9" stroke-dasharray="3,2"/>
+      <g id="g-lmano">
+        <text x="220" y="170" text-anchor="middle" font-size="8.5" fill="#455a64" font-family="Montserrat,sans-serif">④Manóm.</text>
+        <line x1="205" y1="171" x2="152" y2="172" stroke="#bdbdbd" stroke-width=".9" stroke-dasharray="3,2"/>
+      </g>
+      <text x="28" y="375" text-anchor="middle" font-size="8.5" fill="#455a64" font-family="Montserrat,sans-serif">⑤Boquilla</text>
+      <line x1="40" y1="370" x2="48" y2="355" stroke="#bdbdbd" stroke-width=".9" stroke-dasharray="3,2"/>
+    </svg>
+    <p class="svgh">👆 Toca cada número para aprender sobre sus partes</p>
+  </div>
+
+  <div class="pc" id="part-card">
+    <div class="pch" id="part-title">Título</div>
+    <div class="pcb" id="part-body">Descripción</div>
+    <div class="pcf"><button class="cbtn" onclick="closePart()">✓ Entendido</button></div>
+  </div>
+
+  <div class="nav">
+    <button class="nb g" onclick="goTo('sc-datos')">
+      <span class="ic">📋</span><span class="lb">Datos del Extintor</span><span class="ar">›</span>
+    </button>
+    <button class="nb r" onclick="goTo('sc-uso')">
+      <span class="ic">🎥</span><span class="lb">¿Cómo se usa?</span><span class="ar">›</span>
+    </button>
+    <button class="nb o" onclick="goTo('sc-fuego')">
+      <span class="ic">🔥</span><span class="lb">Tipos de Fuego</span><span class="ar">›</span>
+    </button>
+  </div>
+  <div class="ftr">Sistema de Gestión Visual de Extintores · TdeA SST<br>Escanea el QR del equipo para ver su información actualizada</div>
+</div>
+
+<!-- DATOS -->
+<div id="sc-datos" class="screen">
+  <div class="shdr"><h2>📋 Ficha Técnica</h2><p id="d-sub">Extintor</p></div>
+  <button class="back" onclick="goTo('sc-home')">← Regresar al Inicio</button>
+  <div class="ver"><span>✅</span><span>Información verificada por el área de SST — TdeA</span></div>
+  <div class="dc">
+    <div class="dch"><h2 id="d-agente">Agente</h2><p id="d-subtipo">Subtipo</p></div>
+    <div class="df"><span class="dfi">🔖</span><div><div class="dfl">Código Interno</div><div class="dfv" id="d-cod">—</div></div></div>
+    <div class="df"><span class="dfi">📍</span><div><div class="dfl">Ubicación / Área</div><div class="dfv" id="d-ubi">—</div></div></div>
+    <div class="df"><span class="dfi">⚖️</span><div><div class="dfl">Capacidad</div><div class="dfv" id="d-cap">—</div></div></div>
+    <div class="df"><span class="dfi">🏭</span><div><div class="dfl">Marca del Equipo</div><div class="dfv" id="d-marca">—</div></div></div>
+    <div class="df"><span class="dfi">👷</span><div><div class="dfl">Responsable de Mantenimiento</div><div class="dfv" id="d-resp">—</div></div></div>
+    <div class="df"><span class="dfi">🔧</span><div><div class="dfl">Última Recarga</div><div class="dfv" id="d-rec">—</div></div></div>
+    <div class="df"><span class="dfi">📅</span><div><div class="dfl">Próxima Recarga / Vencimiento</div><div class="dfv"><span id="d-ven">—</span><br><span class="bdg" id="d-est">—</span></div></div></div>
+  </div>
+  <div class="wb">⚠️ <strong>Inspección mensual:</strong> Verifique el marchamo intacto, manómetro en zona verde y sin daños físicos. Reporte cualquier anomalía a SST.</div>
+</div>
+
+<!-- USO -->
+<div id="sc-uso" class="screen">
+  <div class="shdr"><h2>🎥 ¿Cómo usar el extintor?</h2><p>Método P.A.S.S. · Fácil de recordar</p></div>
+  <button class="back" onclick="goTo('sc-home')">← Regresar al Inicio</button>
+  <div class="vw"><iframe id="uso-if" src="about:blank" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen title="Tutorial extintor"></iframe></div>
+  <p class="vlb">📺 Tutorial · Extintor <span id="uso-tipo">ABC</span></p>
+  <div class="pass">
+    <h3>🧠 Método P.A.S.S.</h3>
+    <div class="pi"><div class="pn">P</div><div class="pt"><strong>PULL — Jalar:</strong> Retira el pasador de seguridad del anillo. Verifica el marchamo antes de usarlo.</div></div>
+    <div class="pi"><div class="pn">A</div><div class="pt"><strong>AIM — Apuntar:</strong> Dirige la boquilla hacia la <strong>BASE</strong> de las llamas, no hacia el centro.</div></div>
+    <div class="pi"><div class="pn">S</div><div class="pt"><strong>SQUEEZE — Apretar:</strong> Presiona el gatillo con firmeza y de forma continua.</div></div>
+    <div class="pi"><div class="pn">S</div><div class="pt"><strong>SWEEP — Barrer:</strong> Movimientos de barrido de lado a lado cubriendo la base del fuego.</div></div>
+  </div>
+  <div class="wb" style="margin-top:16px">⚠️ <strong>Un extintor de 10 lbs tiene solo 8–15 seg de descarga efectiva.</strong> Si el fuego se ha propagado, evacúa y llama al <strong>119</strong>.</div>
+</div>
+
+<!-- FUEGO -->
+<div id="sc-fuego" class="screen">
+  <div class="shdr"><h2>🔥 Tipos de Fuego</h2><p id="fuego-sub">Clases que controla</p></div>
+  <button class="back" onclick="goTo('sc-home')">← Regresar al Inicio</button>
+  <div class="fnote" id="fnote"></div>
+  <p class="slbl" style="margin-top:8px">Clasificación NFPA 10 · NTC 2885</p>
+  <div class="fg" id="fgrid"></div>
+  <div class="wb" style="margin-top:16px">🚫 <strong>¡Nunca uses agua en fuegos Clase C!</strong> Puede causar electrocución. Usa siempre el extintor correcto.</div>
+  <div class="ftr">Clasificación NFPA 10 · NTC 2885 · Resolución 0312 de 2019</div>
+</div>
+
+<script>
+'use strict';
+
+/* ── PARTES ── */
+const PARTES = {
+  manija:{title:'① Manija de Transporte',body:'La manija permite sujetar y movilizar el extintor de forma segura hasta el punto de emergencia. Transpórtalo siempre en posición <strong>vertical</strong> para mantener la presión correcta. Agárralo firme, acércate al fuego por la ruta de escape libre y actúa con decisión. ¡No corras!'},
+  gatillo:{title:'② Gatillo de Descarga',body:'El gatillo libera el agente extintor al presionarlo. Acciona solo cuando estés frente al fuego, apuntando a la <strong>BASE de las llamas</strong>. Un extintor de 10 lbs tiene solo <strong>8–15 segundos de descarga efectiva</strong>. Si el fuego no cede en los primeros 3 segundos, evacúa.'},
+  pasador:{title:'③ Pasador de Seguridad y Marchamo',body:'El pasador evita activación accidental. Se jala como <strong>primer paso del P.A.S.S.</strong> El <strong>marchamo o sello</strong> es la evidencia del estado del extintor: si está roto o ausente significa uso previo o manipulación y debe reportarse a SST de inmediato.'},
+  manometro:{title:'④ Manómetro de Presión',body:'La aguja debe estar siempre en <strong>zona verde</strong>. Roja izquierda = baja presión. Roja derecha = sobrepresión. En ambos casos el equipo <strong>NO está apto</strong>. Verifica mensualmente. Nota: extintores de CO₂ y agentes limpios <strong>no tienen manómetro</strong>; su carga se verifica pesando el cilindro.'},
+  manguera:{title:'⑤ Manguera y Boquilla de Descarga',body:'Permite dirigir el agente hacia la base del fuego. Realiza movimientos de <strong>barrido lateral</strong>. En CO₂ la boquilla corneta alcanza <strong>-79°C</strong>: nunca la toques sin protección durante ni después de la descarga.'}
+};
+
+/* ── FUEGOS ── */
+const FUEGOS=[
+  {c:'A',i:'🪵',n:'Clase A',e:'Madera, papel, cartón, telas, plásticos',cl:'ca'},
+  {c:'B',i:'⛽',n:'Clase B',e:'Gasolina, aceites, pinturas, gases inflamables',cl:'cb'},
+  {c:'C',i:'⚡',n:'Clase C',e:'Equipos eléctricos energizados, tableros, PCs',cl:'cc'},
+  {c:'D',i:'⚙️',n:'Clase D',e:'Metales combustibles: magnesio, titanio, litio',cl:'cd'},
+  {c:'K',i:'🍳',n:'Clase K',e:'Aceites y grasas vegetales/animales en cocina',cl:'ck'}
+];
+const ACTIVE={ABC:['A','B','C'],CO2:['B','C'],SOLKAFLAM:['B','C']};
+const NOTAS={
+  CO2:'💡 <strong>CO₂ no deja residuos</strong> — ideal para laboratorios de cómputo y equipos electrónicos costosos. En espacios cerrados puede desplazar el oxígeno: <strong>evacúa inmediatamente</strong> después de su uso y ventila antes de reingresar.',
+  SOLKAFLAM:'💡 <strong>Agente Limpio FM-200</strong> — gas inerte, no conductor, sin residuos. Ideal para servidores, centros de cómputo y activos críticos. Absorbe el calor sin dañar equipos ni documentos. Requiere revisión por peso anual por proveedor especializado.'
+};
+
+/* ── CHIPS ── */
+const CHIPS={ABC:'chip-abc',CO2:'chip-co2',SOLKAFLAM:'chip-sol'};
+const CHIP_LABELS={ABC:'Polvo ABC',CO2:'CO₂',SOLKAFLAM:'Solkaflam FM-200'};
+const SUBTIPO_MAP={
+  ABC:{st:'POLVO QUÍMICO SECO',tp:'ABC MULTIPROPÓSITO',vid:'WqC-I3KUUOg'},
+  CO2:{st:'GAS CARBÓNICO (CO₂)',tp:'SIN RESIDUOS',vid:'5UXD2SDQBSI'},
+  SOLKAFLAM:{st:'AGENTE LIMPIO FM-200',tp:'SOLKAFLAM',vid:'5UXD2SDQBSI'}
+};
+
+/* ── ESTADO ── */
+let E={};
+let vidLoaded=false;
+
+/* ── INIT ── */
+(function(){
+  const p=new URLSearchParams(location.search);
+  const raw=p.get('d');
+  if(!raw){
+    showError();
+    return;
+  }
+  try{
+    E=JSON.parse(atob(decodeURIComponent(raw)));
+    render();
+  }catch(e){
+    showError();
+  }
+})();
+
+function render(){
+  const m=SUBTIPO_MAP[E.tipo]||SUBTIPO_MAP.ABC;
+  const ch=document.getElementById('h-chip');
+
+  // Header
+  document.getElementById('h-title').textContent=E.nombre||'Extintor TdeA';
+  document.getElementById('h-badge').textContent=E.codigo||'—';
+  ch.textContent=CHIP_LABELS[E.tipo]||E.tipo;
+  ch.className='tipo-chip '+(CHIPS[E.tipo]||'chip-abc');
+
+  // SVG
+  document.getElementById('svg-st').textContent=m.st;
+  document.getElementById('svg-tp').textContent=m.tp;
+  document.getElementById('svg-id').textContent=E.codigo||'';
+
+  // Manómetro
+  const showM=E.manometro!==false&&E.tipo==='ABC';
+  ['g-mano','hs-mano','g-lmano'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display=showM?'':'none';
+  });
+
+  // Datos screen
+  document.getElementById('d-sub').textContent='Extintor '+E.codigo;
+  document.getElementById('d-agente').textContent=E.agente||E.nombre;
+  document.getElementById('d-subtipo').textContent=m.st.toLowerCase().replace(/^\w/,c=>c.toUpperCase());
+  document.getElementById('d-cod').textContent=E.codigo;
+  document.getElementById('d-ubi').textContent=E.ubicacion;
+  document.getElementById('d-cap').textContent=E.capacidad;
+  document.getElementById('d-marca').textContent=E.marca;
+  document.getElementById('d-resp').textContent=E.responsable;
+  document.getElementById('d-rec').textContent=E.recarga;
+  document.getElementById('d-ven').textContent=E.vence;
+  const est=document.getElementById('d-est');
+  if(isExp(E.vence)){est.textContent='⚠ VENCIDO — Reportar a SST';est.className='bdg bex';}
+  else{est.textContent='✓ Vigente';est.className='bdg bok';}
+
+  // Uso
+  document.getElementById('uso-tipo').textContent=E.agente;
+  document.getElementById('uso-if').dataset.vid=m.vid;
+
+  // Fuego
+  document.getElementById('fuego-sub').textContent='Clases que controla · '+E.nombre;
+  buildFire();
+}
+
+function showError(){
+  document.getElementById('sc-home').innerHTML=`
+    <div class="ahdr"><div class="inst">🏫 Tecnológico de Antioquia</div>
+    <div class="etitle">Sistema de Extintores</div></div>
+    <div class="err">
+      <div class="eico">🔍</div>
+      <h3>QR no válido</h3>
+      <p>No se encontró información de extintor en este código QR.<br><br>
+      Contacta al área de SST del Tecnológico de Antioquia para verificar el equipo.</p>
+    </div>`;
+}
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById(id);
+  if(el){el.classList.add('on');window.scrollTo({top:0,behavior:'instant'});}
+  if(id==='sc-uso'&&!vidLoaded){
+    const iframe=document.getElementById('uso-if');
+    iframe.src=`https://www.youtube.com/embed/${iframe.dataset.vid}?rel=0&modestbranding=1&playsinline=1`;
+    vidLoaded=true;
+  }
+}
+
+function showPart(k){
+  if(k==='manometro'&&E.tipo!=='ABC')return;
+  const p=PARTES[k];if(!p)return;
+  document.getElementById('part-title').textContent=p.title;
+  document.getElementById('part-body').innerHTML=p.body;
+  const c=document.getElementById('part-card');
+  c.classList.add('op');
+  setTimeout(()=>c.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+function closePart(){document.getElementById('part-card').classList.remove('op');}
+
+function buildFire(){
+  const tipo=E.tipo||'ABC';
+  const act=ACTIVE[tipo]||['A','B','C'];
+  const g=document.getElementById('fgrid');
+  const n=document.getElementById('fnote');
+  if(NOTAS[tipo]){n.innerHTML=NOTAS[tipo];n.style.display='block';}
+  else n.style.display='none';
+  g.innerHTML='';
+  FUEGOS.forEach(f=>{
+    const on=act.includes(f.c);
+    const d=document.createElement('div');
+    d.className='fc '+(on?'on':'off');
+    d.innerHTML=`<div class="fico">${f.i}</div><div class="fcls ${f.cl}">${f.c}</div>
+      <div class="fn">${f.n}</div><div class="fex">${f.e}</div>${on?'<div style="font-size:16px;margin-top:6px">✅</div>':''}`;
+    g.appendChild(d);
+  });
+}
+
+function isExp(s){
+  const m={enero:0,febrero:1,marzo:2,abril:3,mayo:4,junio:5,julio:6,agosto:7,septiembre:8,octubre:9,noviembre:10,diciembre:11};
+  const p=(s||'').toLowerCase().split(' ');
+  if(p.length<2)return false;
+  const mo=m[p[0]],yr=parseInt(p[1]);
+  if(mo===undefined||isNaN(yr))return false;
+  return new Date(yr,mo+1,0)<new Date();
+}
+</script>
+</body>
+</html>
