@@ -177,15 +177,15 @@
          xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama interactivo">
       <ellipse cx="130" cy="388" rx="52" ry="8" fill="rgba(0,0,0,.14)"/>
       <!-- Cuerpo -->
-      <rect x="90" y="148" width="80" height="210" rx="16" fill="#c62828"/>
+      <rect id="svg-body" x="90" y="148" width="80" height="210" rx="16" fill="#f9a825"/>
       <rect x="97" y="158" width="11" height="185" rx="5.5" fill="rgba(255,255,255,.16)"/>
-      <ellipse cx="130" cy="358" rx="40" ry="10" fill="#b71c1c"/>
+      <ellipse id="svg-body-bottom" cx="130" cy="358" rx="40" ry="10" fill="#e65100"/>
       <!-- Cuello -->
       <rect x="112" y="112" width="36" height="42" rx="8" fill="#37474f"/>
       <ellipse cx="130" cy="112" rx="18" ry="7" fill="#546e7a"/>
       <!-- Etiqueta blanca -->
       <rect x="92" y="192" width="76" height="88" rx="5" fill="white" opacity=".93"/>
-      <text x="130" y="212" text-anchor="middle" font-size="7.5" font-weight="800" fill="#c62828" font-family="Montserrat,sans-serif">EXTINTOR</text>
+      <text id="svg-extintor-label" x="130" y="212" text-anchor="middle" font-size="7.5" font-weight="800" fill="#f9a825" font-family="Montserrat,sans-serif">EXTINTOR</text>
       <text x="130" y="224" text-anchor="middle" font-size="6" fill="#333" font-family="Montserrat,sans-serif" id="svg-st">POLVO QUÍMICO SECO</text>
       <text x="130" y="236" text-anchor="middle" font-size="6.5" font-weight="800" fill="#333" font-family="Montserrat,sans-serif" id="svg-tp">ABC MULTIPROPÓSITO</text>
       <line x1="100" y1="244" x2="160" y2="244" stroke="#e0e0e0" stroke-width=".8"/>
@@ -209,7 +209,7 @@
         <circle cx="130" cy="174" r="11" fill="#f5f5f5"/>
         <path d="M120 181 A11 11 0 0 1 140 181" fill="none" stroke="#e0e0e0" stroke-width="2.5"/>
         <path d="M120 181 A11 11 0 0 1 130 163" fill="none" stroke="#43a047" stroke-width="3"/>
-        <line x1="130" y1="174" x2="130" y2="165" stroke="#c62828" stroke-width="2" stroke-linecap="round"/>
+        <line id="svg-mano-needle" x1="130" y1="174" x2="130" y2="165" stroke="#c62828" stroke-width="2" stroke-linecap="round"/>
         <circle cx="130" cy="174" r="2.5" fill="#37474f"/>
         <text x="130" y="183" text-anchor="middle" font-size="4.5" fill="#777" font-family="Montserrat,sans-serif">OK</text>
       </g>
@@ -374,6 +374,20 @@ function render(){
   document.getElementById('svg-st').textContent=m.st;
   document.getElementById('svg-tp').textContent=m.tp;
   document.getElementById('svg-id').textContent=E.codigo||'';
+
+  // Color cuerpo según tipo
+  const BODY_COLORS={ABC:'#f9a825',CO2:'#c62828',SOLKAFLAM:'#c62828'};
+  const BODY_BOTTOM={ABC:'#e65100',CO2:'#b71c1c',SOLKAFLAM:'#b71c1c'};
+  const bc=BODY_COLORS[E.tipo]||'#f9a825';
+  const bbot=BODY_BOTTOM[E.tipo]||'#e65100';
+  const svgBody=document.getElementById('svg-body');
+  const svgBodyBot=document.getElementById('svg-body-bottom');
+  const svgLabel=document.getElementById('svg-extintor-label');
+  const svgNeedle=document.getElementById('svg-mano-needle');
+  if(svgBody) svgBody.setAttribute('fill',bc);
+  if(svgBodyBot) svgBodyBot.setAttribute('fill',bbot);
+  if(svgLabel) svgLabel.setAttribute('fill',bc);
+  if(svgNeedle) svgNeedle.setAttribute('stroke',bc);
 
   // Manómetro
   const showM=E.manometro!==false&&E.tipo==='ABC';
