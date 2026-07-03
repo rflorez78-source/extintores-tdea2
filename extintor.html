@@ -282,8 +282,8 @@
 <div id="sc-uso" class="screen">
   <div class="shdr"><h2>🎥 ¿Cómo usar el extintor?</h2><p>Método P.A.S.S. · Fácil de recordar</p></div>
   <button class="back" onclick="goTo('sc-home')">← Regresar al Inicio</button>
-  <div class="vw" id="uso-vw-local" style="display:none">
-    <video id="uso-vid" controls playsinline style="position:absolute;inset:0;width:100%;height:100%;background:#000">
+  <div id="uso-vw-local" style="display:none;margin:16px 20px;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);background:#000">
+    <video id="uso-vid" controls playsinline preload="metadata" style="width:100%;display:block;max-height:260px;object-fit:contain">
       <source src="video_abc.mp4" type="video/mp4">
     </video>
   </div>
