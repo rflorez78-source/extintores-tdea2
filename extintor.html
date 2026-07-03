@@ -282,7 +282,12 @@
 <div id="sc-uso" class="screen">
   <div class="shdr"><h2>🎥 ¿Cómo usar el extintor?</h2><p>Método P.A.S.S. · Fácil de recordar</p></div>
   <button class="back" onclick="goTo('sc-home')">← Regresar al Inicio</button>
-  <div class="vw"><iframe id="uso-if" src="about:blank" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen title="Tutorial extintor"></iframe></div>
+  <div class="vw" id="uso-vw-local" style="display:none">
+    <video id="uso-vid" controls playsinline style="position:absolute;inset:0;width:100%;height:100%;background:#000">
+      <source src="video_abc.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="vw" id="uso-vw-yt" style="display:none"><iframe id="uso-if" src="about:blank" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen title="Tutorial extintor"></iframe></div>
   <p class="vlb">📺 Tutorial · Extintor <span id="uso-tipo">ABC</span></p>
   <div class="pass">
     <h3>🧠 Método P.A.S.S.</h3>
@@ -439,8 +444,16 @@ function goTo(id){
   const el=document.getElementById(id);
   if(el){el.classList.add('on');window.scrollTo({top:0,behavior:'instant'});}
   if(id==='sc-uso'&&!vidLoaded){
-    const iframe=document.getElementById('uso-if');
-    iframe.src=`https://www.youtube.com/embed/${iframe.dataset.vid}?rel=0&modestbranding=1&playsinline=1`;
+    if(E.tipo==='ABC'){
+      document.getElementById('uso-vw-local').style.display='block';
+      document.getElementById('uso-vw-yt').style.display='none';
+    } else {
+      document.getElementById('uso-vw-local').style.display='none';
+      document.getElementById('uso-vw-yt').style.display='block';
+      const iframe=document.getElementById('uso-if');
+      const m=SUBTIPO_MAP[E.tipo]||SUBTIPO_MAP.CO2;
+      iframe.src=`https://www.youtube.com/embed/${m.vid}?rel=0&modestbranding=1&playsinline=1`;
+    }
     vidLoaded=true;
   }
 }
