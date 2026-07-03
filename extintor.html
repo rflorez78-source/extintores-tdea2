@@ -376,17 +376,19 @@ function render(){
   document.getElementById('svg-id').textContent=E.codigo||'';
 
   // Color cuerpo según tipo
-  const BODY_COLORS={ABC:'#f9a825',CO2:'#c62828',SOLKAFLAM:'#c62828'};
-  const BODY_BOTTOM={ABC:'#e65100',CO2:'#b71c1c',SOLKAFLAM:'#b71c1c'};
+  const BODY_COLORS={ABC:'#f9a825',CO2:'#c62828',SOLKAFLAM:'#ffffff'};
+  const BODY_BOTTOM={ABC:'#e65100',CO2:'#b71c1c',SOLKAFLAM:'#bdbdbd'};
+  const LABEL_COLORS={ABC:'#f9a825',CO2:'#c62828',SOLKAFLAM:'#37474f'};
   const bc=BODY_COLORS[E.tipo]||'#f9a825';
   const bbot=BODY_BOTTOM[E.tipo]||'#e65100';
+  const lc=LABEL_COLORS[E.tipo]||'#f9a825';
   const svgBody=document.getElementById('svg-body');
   const svgBodyBot=document.getElementById('svg-body-bottom');
   const svgLabel=document.getElementById('svg-extintor-label');
   const svgNeedle=document.getElementById('svg-mano-needle');
   if(svgBody) svgBody.setAttribute('fill',bc);
   if(svgBodyBot) svgBodyBot.setAttribute('fill',bbot);
-  if(svgLabel) svgLabel.setAttribute('fill',bc);
+  if(svgLabel) svgLabel.setAttribute('fill',lc);
   if(svgNeedle) svgNeedle.setAttribute('stroke',bc);
 
   // Manómetro
