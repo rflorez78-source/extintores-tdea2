@@ -417,14 +417,23 @@ function render(){
   document.getElementById('uso-tipo').textContent=E.agente;
   const player=document.getElementById('uso-player');
   const videoLocal={ABC:'video_abc.mp4',CO2:'video_CO2.mp4'};
+  player.innerHTML='';
   if(videoLocal[E.tipo]){
     player.style.cssText='margin:16px 20px;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);background:#000';
-    player.innerHTML='<video controls playsinline preload="metadata" style="width:100%;display:block">'+
-      '<source src="'+videoLocal[E.tipo]+'" type="video/mp4"></video>';
+    const vid=document.createElement('video');
+    vid.controls=true; vid.playsInline=true; vid.preload='auto';
+    vid.style.cssText='width:100%;display:block';
+    const src=document.createElement('source');
+    src.src=videoLocal[E.tipo]; src.type='video/mp4';
+    vid.appendChild(src);
+    player.appendChild(vid);
   } else {
     player.className='vw';
-    player.innerHTML='<iframe src="https://www.youtube.com/embed/'+m.vid+
-      '?rel=0&modestbranding=1&playsinline=1" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen title="Tutorial extintor"></iframe>';
+    const ifr=document.createElement('iframe');
+    ifr.src='https://www.youtube.com/embed/'+m.vid+'?rel=0&modestbranding=1&playsinline=1';
+    ifr.setAttribute('allow','autoplay;encrypted-media;picture-in-picture');
+    ifr.allowFullscreen=true;
+    player.appendChild(ifr);
   }
 
   // Fuego
